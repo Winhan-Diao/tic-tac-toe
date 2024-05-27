@@ -25,7 +25,7 @@ public class PCBrain {
 
     public int scoreEvaluating(int finalPlaced, Player finalPlayer, ArrayList<Integer> history, ArrayList<Integer> board) {
 //        board = caseCompiling(history, board);
-        Player winner = Main.rowDetect(finalPlaced, finalPlayer, board);
+        Player winner = Main.rowDetect(finalPlaced, finalPlayer, board, true);
         if (winner == null) {
             return 0;
         } else if (winner.equals(Main.pc)) {
@@ -42,6 +42,7 @@ public class PCBrain {
             score = minimaxAlgorithm(board, e, true, depth, random);
             treeMap.put(e.data, score);
         }
+        System.out.println(treeMap);
         int minValue = Collections.min(treeMap.values());
         List<Integer> bests = treeMap.entrySet().stream().filter(entry -> Objects.equals(entry.getValue(), minValue)).map(Map.Entry::getKey).collect(Collectors.toList());
         return bests.get(random.nextInt(0, bests.size()));
@@ -51,10 +52,10 @@ public class PCBrain {
         int score, score1;
         ArrayList<Integer> board1 = (ArrayList<Integer>) board.clone();
         board1.set(treeNodes.data, isPC? Main.pc.getRepersentInt() : Main.human.getRepersentInt());
-        if (treeNodes.children.isEmpty() || Main.rowDetect(treeNodes.data, isPC? Main.pc : Main.human, board1) != null) {
+        if (treeNodes.children.isEmpty() || Main.rowDetect(treeNodes.data, isPC? Main.pc : Main.human, board1, true) != null) {
             return scoreEvaluating(treeNodes.data, isPC ? Main.pc : Main.human, treeNodes.accumulated, board1);
         }
-        if (isPC) {
+        if (!isPC) {
             score = 10;
             score1 = treeNodes.children.stream().map(child -> minimaxAlgorithm(board1, child, !isPC, depth, random)).min(Integer::compareTo).get();
             score = Math.min(score1, score);
@@ -70,11 +71,13 @@ public class PCBrain {
         if (round == 9) {
             return getSpecific(board, 0).get(0);
         }
+/*
         if (round == 1) {
             if (random.nextInt() % 2 == 0) {
                 return 4;
             } else return new int[]{0, 2, 6, 8}[random.nextInt(4)];
         }
+*/
 //        decisionMakingProcess(round, board, random);
 //        TreeNodes treeNodes = new TreeNodes(-1, getSpecific(board, 0), new ArrayList<>());
 //        return pureRandom(board, random);
