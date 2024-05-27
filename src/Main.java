@@ -9,28 +9,28 @@ public class Main {
     public static Player human;
     public static Player pc;
 
-    public static Player rowDetect(int placed, Player player, ArrayList<Integer> board) {
+    public static Player rowDetect(int placed, Player player, ArrayList<Integer> board, boolean simulated) {
         boolean flag = false;
         int row = placed % 3;
         int line = placed / 3;
         if (Objects.equals(board.get(line*3 + 0), board.get(line*3 + 1)) && Objects.equals(board.get(line*3 + 1), board.get(line*3 + 2))) {
-            System.out.println("LINE!");
+            if (!simulated) System.out.println("LINE!");
             flag = true;
         }
         if (Objects.equals(board.get(0*3 + row), board.get(1*3 + row)) && Objects.equals(board.get(1*3 + row), board.get(2*3 + row))) {
-            System.out.println("ROW!");
+            if (!simulated) System.out.println("ROW!");
             flag = true;
         }
         if (placed % 2 == 0) {
             if (placed == 0 || placed == 4 || placed == 8) {
                 if (Objects.equals(board.get(0), board.get(4)) && Objects.equals(board.get(4), board.get(8))) {
-                    System.out.println("CROSS!");
+                    if (!simulated) System.out.println("CROSS!");
                     flag = true;
                 }
             }
             if (placed == 2 || placed == 4 || placed == 6) {
                 if (Objects.equals(board.get(2), board.get(4)) && Objects.equals(board.get(4), board.get(6))) {
-                    System.out.println("CROSS!");
+                    if (!simulated) System.out.println("CROSS!");
                     flag = true;
                 }
             }
@@ -129,7 +129,7 @@ public class Main {
             } else {
                 chosenGrid = calculateNumber(pcBrain, currentPlayer, board, round);
             }
-            if (rowDetect(chosenGrid, currentPlayer, board) != null) {
+            if (rowDetect(chosenGrid, currentPlayer, board, false) != null) {
                 System.out.println(String.format("%s wins the game!", currentPlayer.getName()));
                 System.out.println(board);
                 break;
