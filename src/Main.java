@@ -55,7 +55,7 @@ public class Main {
         Integer chosenGrid;
         do {
             try {
-                chosenGrid = Integer.parseInt(sc.nextLine());
+                chosenGrid = Integer.parseInt(sc.nextLine()) - 1;
             } catch (NumberFormatException e) {
                 System.out.println("Not a number! ");
                 chosenGrid = null;
@@ -72,71 +72,81 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        for (; ; ) {
 
-        System.out.println("Tic Tac Toe!");
-        ArrayList<Integer> board = new ArrayList<Integer>(Arrays.stream(TEMPLATE).boxed().toList()) {
-            public String getS(int index) {
-                int i = get(index);
-                return switch (i) {
-                    case 1 -> "O";
-                    case -1 -> "X";
-                    default -> ".";
-                };
-            }
+            System.out.println("Tic Tac Toe!");
+            ArrayList<Integer> board = new ArrayList<Integer>(Arrays.stream(TEMPLATE).boxed().toList()) {
+                public String getS(int index) {
+                    int i = get(index);
+                    return switch (i) {
+                        case 1 -> "O";
+                        case -1 -> "X";
+                        default -> ".";
+                    };
+                }
 
-            @Override
-            public String toString() {
-                return String.format("===== \n%s %s %s \n%s %s %s \n%s %s %s \n=====", getS(0), getS(1), getS(2), getS(3), getS(4), getS(5), getS(6), getS(7), getS(8));
-            }
-        };
-        System.out.println(board);
-
-        Scanner sc = new Scanner(System.in);
-
-        for (;;) {
-            System.out.println("Who play first?");
-            String text = sc.nextLine();
-            if (text.equals("I")) {
-                human = new Player(1, "O", "HUMAN");
-                pc = new Player(-1, "X", "PC");
-                break;
-            } else if (text.equals("U")) {
-                pc = new Player(1, "O", "PC");
-                human = new Player(-1, "X", "HUMAN");
-                break;
-            }
-        }
-
-        int chosenGrid;
-        int currentSide = 1;
-        int round = 1;
-        Player currentPlayer;
-        PCBrain pcBrain = new PCBrain();
-        currentPlayer = human.getRepersentInt() == 1 ? human : pc;
-        System.out.println(String.format("Therefore, %1$s goes first. \n%1$s, please choose a number from 0 to 8.", currentPlayer.getName()));
-        if (currentPlayer.equals(human)) {
-            scanNumber(sc, currentPlayer, board);
-        } else {
-            calculateNumber(pcBrain, currentPlayer, board, round);
-        }
-        System.out.println(board);
-        for (round = 2; round <=9; round ++) {
-            currentSide = currentSide == 1 ? -1 : 1;
-            currentPlayer = human.getRepersentInt() == currentSide ? human : pc;
-            System.out.println(String.format("Now it's round %d, %s goes.", round, currentPlayer.getName()));
-            if (currentPlayer.equals(human)) {
-                chosenGrid = scanNumber(sc, currentPlayer, board);
-            } else {
-                chosenGrid = calculateNumber(pcBrain, currentPlayer, board, round);
-            }
-            if (rowDetect(chosenGrid, currentPlayer, board, false) != null) {
-                System.out.println(String.format("%s wins the game!", currentPlayer.getName()));
-                System.out.println(board);
-                break;
-            }
-            if (round == 9) System.out.println("TIE!");
+                @Override
+                public String toString() {
+                    return String.format("===== \n%s %s %s \n%s %s %s \n%s %s %s \n=====", getS(0), getS(1), getS(2), getS(3), getS(4), getS(5), getS(6), getS(7), getS(8));
+                }
+            };
             System.out.println(board);
-        }
 
+            Scanner sc = new Scanner(System.in);
+
+            for (; ; ) {
+                System.out.println("Who play first? (I/U)");
+                String text = sc.nextLine();
+                if (text.equals("I")) {
+                    human = new Player(1, "O", "HUMAN");
+                    pc = new Player(-1, "X", "PC");
+                    break;
+                } else if (text.equals("U")) {
+                    pc = new Player(1, "O", "PC");
+                    human = new Player(-1, "X", "HUMAN");
+                    break;
+                }
+            }
+
+            int chosenGrid;
+            int currentSide = 1;
+            int round = 1;
+            Player currentPlayer;
+            PCBrain pcBrain = new PCBrain();
+            currentPlayer = human.getRepersentInt() == 1 ? human : pc;
+            System.out.println(String.format("Therefore, %1$s goes first. \n%1$s, please choose a number from 1 to 9.", currentPlayer.getName()));
+            if (currentPlayer.equals(human)) {
+                scanNumber(sc, currentPlayer, board);
+            } else {
+                calculateNumber(pcBrain, currentPlayer, board, round);
+            }
+            System.out.println(board);
+            for (round = 2; round <= 9; round++) {
+                currentSide = currentSide == 1 ? -1 : 1;
+                currentPlayer = human.getRepersentInt() == currentSide ? human : pc;
+                System.out.println(String.format("Now it's round %d, %s goes.", round, currentPlayer.getName()));
+                if (currentPlayer.equals(human)) {
+                    chosenGrid = scanNumber(sc, currentPlayer, board);
+                } else {
+                    chosenGrid = calculateNumber(pcBrain, currentPlayer, board, round);
+                }
+                if (rowDetect(chosenGrid, currentPlayer, board, false) != null) {
+                    System.out.println(String.format("%s wins the game!", currentPlayer.getName()));
+                    System.out.println(board);
+                    break;
+                }
+                if (round == 9) System.out.println("TIE!");
+                System.out.println(board);
+            }
+            for(;;) {
+                System.out.println("Replay? (Y/N)");
+                String isReplay = sc.nextLine();
+                if (Objects.equals(isReplay, "N")) {
+                    System.exit(0);
+                } else if (Objects.equals(isReplay, "Y")) {
+                    break;
+                }
+            }
+        }
     }
 }
