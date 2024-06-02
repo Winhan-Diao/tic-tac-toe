@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -64,14 +66,14 @@ public class Main {
         return chosenGrid;
     }
 
-    public static int calculateNumber(PCBrain pcBrain,Player player, ArrayList<Integer> board, int round) {
+    public static int calculateNumber(PCBrain pcBrain, ArrayList<Integer> board, int round) {
         int resultGrid = pcBrain.makeMove(board, round);
         System.out.println(String.format("PC choose %d", resultGrid));
         placingProcess(resultGrid, pc, board);
         return resultGrid;
     }
 
-    public static void main(String[] args) {
+    public static void noUIGameProcess() {
         for (; ; ) {
 
             System.out.println("Tic Tac Toe!");
@@ -118,7 +120,7 @@ public class Main {
             if (currentPlayer.equals(human)) {
                 scanNumber(sc, currentPlayer, board);
             } else {
-                calculateNumber(pcBrain, currentPlayer, board, round);
+                calculateNumber(pcBrain, board, round);
             }
             System.out.println(board);
             for (round = 2; round <= 9; round++) {
@@ -128,7 +130,7 @@ public class Main {
                 if (currentPlayer.equals(human)) {
                     chosenGrid = scanNumber(sc, currentPlayer, board);
                 } else {
-                    chosenGrid = calculateNumber(pcBrain, currentPlayer, board, round);
+                    chosenGrid = calculateNumber(pcBrain, board, round);
                 }
                 if (rowDetect(chosenGrid, currentPlayer, board, false) != null) {
                     System.out.println(String.format("%s wins the game!", currentPlayer.getName()));
@@ -139,7 +141,7 @@ public class Main {
                 System.out.println(board);
             }
             for(;;) {
-                System.out.println("Replay? (Y/N)");
+                System.out.println("Play again? (Y/N)");
                 String isReplay = sc.nextLine();
                 if (Objects.equals(isReplay, "N")) {
                     System.exit(0);
@@ -148,5 +150,23 @@ public class Main {
                 }
             }
         }
+    }
+
+
+    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        if (args.length != 0 && args[0].equals("ui")) {
+            System.out.println(Arrays.toString(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()));
+            System.out.println(Arrays.toString(UIManager.getInstalledLookAndFeels()));
+//            LafManager.setTheme(new IntelliJTheme());
+//            LafManager.install();
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new Frame();
+                }
+            });
+        } else noUIGameProcess();
+
     }
 }
