@@ -39,7 +39,7 @@ public class PCBrain {
         int depth = 9 - round;
         int score;
         for (TreeNodes e : treeNodes.children) {
-            score = minimaxAlgorithm(board, e, true, depth, random);
+            score = (new PCBrain()).minimaxAlgorithm(board, e, true, depth);
             treeMap.put(e.data, score);
         }
         System.out.println(treeMap);
@@ -48,7 +48,7 @@ public class PCBrain {
         return bests.get(random.nextInt(0, bests.size()));
     }
 
-    public int minimaxAlgorithm(ArrayList<Integer> board, TreeNodes treeNodes, boolean isPC, int depth, Random random) {
+    public int minimaxAlgorithm(ArrayList<Integer> board, TreeNodes treeNodes, boolean isPC, int depth) {
         int score, score1;
         ArrayList<Integer> board1 = (ArrayList<Integer>) board.clone();
         board1.set(treeNodes.data, isPC? Main.pc.getRepersentInt() : Main.human.getRepersentInt());
@@ -57,11 +57,11 @@ public class PCBrain {
         }
         if (!isPC) {
             score = 10;
-            score1 = treeNodes.children.stream().map(child -> minimaxAlgorithm(board1, child, !isPC, depth, random)).min(Integer::compareTo).get();
+            score1 = treeNodes.children.stream().map(child -> minimaxAlgorithm(board1, child, !isPC, depth)).min(Integer::compareTo).get();
             score = Math.min(score1, score);
         } else {
             score = -10;
-            score1 = treeNodes.children.stream().map(child -> minimaxAlgorithm(board1, child, !isPC, depth, random)).max(Integer::compareTo).get();
+            score1 = treeNodes.children.stream().map(child -> minimaxAlgorithm(board1, child, !isPC, depth)).max(Integer::compareTo).get();
             score = Math.max(score1, score);
         }
         return score;

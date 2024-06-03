@@ -1,3 +1,6 @@
+import com.github.weisj.darklaf.LafManager;
+import com.github.weisj.darklaf.theme.IntelliJTheme;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -157,9 +160,9 @@ public class Main {
         if (args.length != 0 && args[0].equals("ui")) {
             System.out.println(Arrays.toString(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()));
             System.out.println(Arrays.toString(UIManager.getInstalledLookAndFeels()));
-//            LafManager.setTheme(new IntelliJTheme());
-//            LafManager.install();
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            LafManager.setTheme(new IntelliJTheme());
+            LafManager.install();
+//            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
