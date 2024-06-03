@@ -1,8 +1,7 @@
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 
 public class UIGame {
@@ -23,7 +22,7 @@ public class UIGame {
         if (board == null) {
             board = new ArrayList<>(Arrays.stream(Main.TEMPLATE).boxed().toList());
         } else {
-            for (int i : board) {i = 0;}
+            for (Integer i : board) {i = 0;}
         }
 
         human = new Player(humanRepresentInt, humanRepresentInt == 1 ? "O" : "X", "HUMAN");
@@ -51,20 +50,26 @@ public class UIGame {
                     mainFrame.turnLabel.setText("<html>Turn:<br>PC</html>");
 
                     board.set(targetButtonIndex, humanRepresentInt);
-
                     currentPlayer = pc;
 
                     if (winChecker(targetButtonIndex, board, human) != null) {
                         for (int i : winChecker(targetButtonIndex, board, human)) {
                             mainFrame.j3x3Matrix.jButtons.get(i).setBackground(new Color(0xEEEEE99));
+                            mainFrame.j3x3Matrix.jButtons.get(i).setFont(mainFrame.j3x3Matrix.jButtons.get(i).getFont().deriveFont(Font.BOLD));
                             mainFrame.turnLabel.setText("<html>HUMAN<br>wins the game!</html>");
                             gameState = 100;
                         }
-                    } else if (gameState == 9) {
+                        return;
+                    }
+                    if (gameState == 9) {
                         mainFrame.turnLabel.setText("TIE!");
                         gameState = 100;
+                        return;
                     }
+                    if (mainFrame.analyzerTextArea.isEnabled()) mainFrame.analyzerTextArea.setText("For next: PC\n" + analyzer(true).entrySet().stream().map(Map.Entry::toString).map(s -> (Integer.parseInt(s.split("=")[0])+1)+": "+analyzedCaseParseNumToCase(s.split("=")[1])+"\n").collect(StringBuilder::new, StringBuilder::append, StringBuilder::append));
+
                 }
+
 
                 gameProcess(mainFrame, null);
 
@@ -81,15 +86,19 @@ public class UIGame {
                 if (winChecker(chosengird, board, pc) != null) {
                     for (int i : winChecker(chosengird, board, pc)) {
                         mainFrame.j3x3Matrix.jButtons.get(i).setBackground(new Color(0xEEEEE99));
+                        mainFrame.j3x3Matrix.jButtons.get(i).setFont(mainFrame.j3x3Matrix.jButtons.get(i).getFont().deriveFont(Font.BOLD));
                         mainFrame.turnLabel.setText("<html>PC<br>wins the game!</html>");
                         gameState = 100;
                     }
-                } else if (gameState == 9) {
+                    return;
+                }
+                if (gameState == 9) {
                     mainFrame.turnLabel.setText("TIE!");
                     gameState = 100;
+                    return;
                 }
+                if (mainFrame.analyzerTextArea.isEnabled()) mainFrame.analyzerTextArea.setText("For next: HUMAN\n" + analyzer(false).entrySet().stream().map(Map.Entry::toString).map(s -> (Integer.parseInt(s.split("=")[0])+1)+": "+analyzedCaseParseNumToCase(s.split("=")[1])+"\n").collect(StringBuilder::new, StringBuilder::append, StringBuilder::append));
             }
-
 
         }
 
@@ -100,6 +109,27 @@ public class UIGame {
         int targetRepersentInt = currentPlayer.getRepersentInt();
         ArrayList<Integer> placedIndexes = PCBrain.getSpecific(board, targetRepersentInt);
         return WINNING_CONDITIONS.stream().map(ints -> Arrays.stream(ints).boxed().toList()).filter(placedIndexes::containsAll).findFirst().orElse(null);
+    }
+
+    public TreeMap<Integer, Integer> analyzer(boolean isPC) {
+        TreeMap<Integer, Integer> treeMap = new TreeMap<>();
+        TreeNodes treeNodes = new TreeNodes(-1, PCBrain.getSpecific(this.board, 0), new ArrayList<>());
+        int depth = 9 - gameState;
+        int score;
+        for (TreeNodes e : treeNodes.children) {
+            score = (new PCBrain()).minimaxAlgorithm(this.board, e, isPC, depth);
+            treeMap.put(e.data, score);
+        }
+        return treeMap;
+    }
+
+    public static String analyzedCaseParseNumToCase(String num) {
+        switch (num) {
+            case "1": return "Human wins";
+            case "-1": return "PC wins";
+            case "0": return "Tie";
+            default: return null;
+        }
     }
 
 

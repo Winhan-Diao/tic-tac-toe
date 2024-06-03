@@ -12,7 +12,7 @@ public class J3x3Matrix extends JPanel {
             JButton jButton = new JButton();
             jButton.setPreferredSize(new Dimension(100, 100));
             jButton.setFont(new Font("Calibri", Font.PLAIN, 50));
-            jButton.setToolTipText(String.format("Grid %d", i));
+            jButton.setToolTipText(String.format("Grid %d", i + 1));
             jButtons.add(jButton);
             add(jButton);
         }

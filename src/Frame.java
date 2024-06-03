@@ -9,6 +9,7 @@ public class Frame {
     public UIGame uiGame;
     public J3x3Matrix j3x3Matrix;
     public JLabel turnLabel;
+    public JTextArea analyzerTextArea;
     public int humanRepresentInt = 1;
 
     Frame() {
@@ -38,6 +39,7 @@ public class Frame {
         gameMenu.addSeparator();
         JCheckBoxMenuItem analyzerCheckBoxMenuItem = new JCheckBoxMenuItem("Analyzer");
         gameMenu.add(analyzerCheckBoxMenuItem);
+        analyzerCheckBoxMenuItem.setState(true);
         gameMenu.addSeparator();
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         gameMenu.add(exitMenuItem);
@@ -63,7 +65,7 @@ public class Frame {
         rightPanel.add(turnLabel, "ax 50%, pushy 2");
         JSeparator jSeparator = new JSeparator(SwingConstants.HORIZONTAL);
         rightPanel.add(jSeparator, "grow");
-        JTextArea analyzerTextArea = new JTextArea();
+        analyzerTextArea = new JTextArea();
         rightPanel.add(analyzerTextArea, "grow, pushy 3");
         analyzerTextArea.setEditable(false);
 
@@ -84,6 +86,7 @@ public class Frame {
             for (JButton b : j3x3Matrix.jButtons) {
                 b.setEnabled(true);
                 b.setText(null);
+                b.setFont(b.getFont().deriveFont(Font.PLAIN));
                 b.setBackground(null);
             }
             if (humanRepresentInt == -1)uiGame.gameProcess(this, null);
@@ -97,14 +100,25 @@ public class Frame {
             if (pcRadioButtonMenuItem.isSelected()) humanRepresentInt = -1;
             System.out.println("pc1st");
         });
+        analyzerCheckBoxMenuItem.addActionListener(a -> {
+            if (analyzerCheckBoxMenuItem.getState()) {
+                analyzerTextArea.setEnabled(true);
+                System.out.println("ana off");
+            } else {
+                analyzerTextArea.setEnabled(false);
+                System.out.println("ana on");
+            }
+        });
         exitMenuItem.addActionListener(a -> {
             System.exit(0);
         });
+
+
         for (int i = 0; i < 9; i++) {
             JButton jButton = j3x3Matrix.jButtons.get(i);
             int finalI = i;
             jButton.addActionListener(a -> {
-                if (uiGame != null) uiGame.gameProcess(this, finalI);
+                if (uiGame != null && (jButton.getText() == null || jButton.getText().equals(""))) uiGame.gameProcess(this, finalI);
             });
         }
 
