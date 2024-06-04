@@ -3,6 +3,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class UIGame {
     ArrayList<Integer> board;
@@ -63,6 +64,7 @@ public class UIGame {
                     }
                     if (gameState == 9) {
                         mainFrame.turnLabel.setText("TIE!");
+                        IntStream.range(0, 9).mapToObj(i -> mainFrame.j3x3Matrix.jButtons.get(i)).forEach(b -> (new Thread(new AnimationRunnable(null, new Color(0xD1EECA), 5L, b, true, true))).start());
                         gameState = 100;
                         return;
                     }
@@ -85,7 +87,8 @@ public class UIGame {
 
                 if (winChecker(chosengird, board, pc) != null) {
                     for (int i : winChecker(chosengird, board, pc)) {
-                        mainFrame.j3x3Matrix.jButtons.get(i).setBackground(new Color(0xEEEEE99));
+//                        mainFrame.j3x3Matrix.jButtons.get(i).setBackground(new Color(0xEEEEE99));
+                        new Thread(new AnimationRunnable(null, new Color(0xEEEEE99), 7L, mainFrame.j3x3Matrix.jButtons.get(i), false, false)).start();
                         mainFrame.j3x3Matrix.jButtons.get(i).setFont(mainFrame.j3x3Matrix.jButtons.get(i).getFont().deriveFont(Font.BOLD));
                         mainFrame.turnLabel.setText("<html>PC<br>wins the game!</html>");
                         gameState = 100;
@@ -94,6 +97,7 @@ public class UIGame {
                 }
                 if (gameState == 9) {
                     mainFrame.turnLabel.setText("TIE!");
+                    IntStream.range(0, 9).mapToObj(i -> mainFrame.j3x3Matrix.jButtons.get(i)).forEach(b -> (new Thread(new AnimationRunnable(null, new Color(0xD1EECA), 5L, b, true, true))).start());
                     gameState = 100;
                     return;
                 }
