@@ -3,6 +3,9 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 public class Frame {
     public JFrame jFrame;
@@ -25,14 +28,19 @@ public class Frame {
         JMenuBar jMenuBar = new JMenuBar();
         jFrame.setJMenuBar(jMenuBar);
         JMenu gameMenu = new JMenu("Game");
+        gameMenu.setMnemonic(KeyEvent.VK_G);
         jMenuBar.add(gameMenu);
         JMenuItem newGameMenuItem = new JMenuItem("New Game");
+        newGameMenuItem.setMnemonic(KeyEvent.VK_N);
+        newGameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.ALT_DOWN_MASK));
         gameMenu.add(newGameMenuItem);
         JRadioButtonMenuItem humanRadioButtonMenuItem = new JRadioButtonMenuItem("Human first");
         gameMenu.add(humanRadioButtonMenuItem);
         humanRadioButtonMenuItem.setSelected(true);
+        humanRadioButtonMenuItem.setMnemonic(KeyEvent.VK_H);
         JRadioButtonMenuItem pcRadioButtonMenuItem = new JRadioButtonMenuItem("PC first");
         gameMenu.add(pcRadioButtonMenuItem);
+        pcRadioButtonMenuItem.setMnemonic(KeyEvent.VK_P);
         ButtonGroup p1ButtonGroup = new ButtonGroup();
         p1ButtonGroup.add(humanRadioButtonMenuItem);
         p1ButtonGroup.add(pcRadioButtonMenuItem);
@@ -40,6 +48,7 @@ public class Frame {
         JCheckBoxMenuItem analyzerCheckBoxMenuItem = new JCheckBoxMenuItem("Analyzer");
         gameMenu.add(analyzerCheckBoxMenuItem);
         analyzerCheckBoxMenuItem.setState(true);
+        analyzerCheckBoxMenuItem.setMnemonic(KeyEvent.VK_A);
         gameMenu.addSeparator();
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         gameMenu.add(exitMenuItem);
@@ -112,13 +121,18 @@ public class Frame {
         exitMenuItem.addActionListener(a -> {
             System.exit(0);
         });
-
-
         for (int i = 0; i < 9; i++) {
             JButton jButton = j3x3Matrix.jButtons.get(i);
             int finalI = i;
             jButton.addActionListener(a -> {
                 if (uiGame != null && (jButton.getText() == null || jButton.getText().equals(""))) uiGame.gameProcess(this, finalI);
+            });
+            jButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(String.valueOf(i + 1)), String.valueOf(i + 1));
+            jButton.getActionMap().put(String.valueOf(i + 1), new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    jButton.doClick();
+                }
             });
         }
 
